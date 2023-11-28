@@ -164,6 +164,7 @@ class PDFObject:
         return iobj_ref(self.id)
 
     def serialize(self, obj_dict=None, _security_handler=None):
+        print("Here we are creating each object")
         "Serialize the PDF object as an obj<</>>endobj text block"
         output = []
         output.append(f"{self.id} 0 obj")
@@ -190,6 +191,7 @@ class PDFObject:
         The property names are converted from snake_case to CamelCase,
         and prefixed with a slash character "/".
         """
+        print("here the object is being build")
         return build_obj_dict(
             {key: getattr(self, key) for key in dir(self)},
             _security_handler=security_handler,
@@ -341,6 +343,7 @@ class PDFArray(list):
                 )
                 for elem in self
             )
+        print(serialized_elems)
         return f"[{serialized_elems}]"
 
 

@@ -167,7 +167,7 @@ def render_pdf_primitive(primitive):
         output = "<< " + "\n".join(item_list) + " >>"
     else:
         raise TypeError(f"cannot produce PDF representation for value {primitive!r}")
-
+    
     return Raw(output)
 
 
@@ -1228,6 +1228,7 @@ class GraphicsStyle:
 
     @fill_color.setter
     def fill_color(self, color):
+        print("here")
         if isinstance(color, str):
             color = color_from_hex_string(color)
 
@@ -4230,4 +4231,4 @@ class TilingPattern:
         pattern_dict_str += " >>"
         pattern_dict_str += f" /Matrix {self.matrix} >>"
         
-        return pattern_dict_str
+        return "/Pattern cs /P1 scn"

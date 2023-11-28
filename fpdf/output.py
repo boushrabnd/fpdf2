@@ -66,6 +66,7 @@ class PDFFont(PDFObject):
         super().__init__()
         self.type = Name("Font")
         self.subtype = Name(subtype)
+        print("sub: ", subtype)
         self.base_font = Name(base_font)
         self.encoding = Name(encoding) if encoding else None
         self.d_w = d_w
@@ -76,6 +77,19 @@ class PDFFont(PDFObject):
         self.font_descriptor = None
         self.c_i_d_to_g_i_d_map = None
 
+print("Consider adding PDFPattern")
+class PDFPattern(PDFObject):
+    def __init__(self, pattern_type, paint_type, tiling_type, bbox, x_step, y_step, resources=None, matrix=None):
+        super().__init__()
+        self.type = Name("Pattern")
+        self.pattern_type = pattern_type
+        self.paint_type = paint_type
+        self.tiling_type = tiling_type
+        self.bbox = bbox
+        self.x_step = x_step
+        self.y_step = y_step
+        self.resources = resources if resources else None
+        self.matrix = matrix if matrix else None
 
 class CIDSystemInfo(PDFObject):
     def __init__(self):
@@ -350,6 +364,7 @@ class OutputProducer:
         self.buffer = bytearray()  # resulting output buffer
 
     def bufferize(self):
+        print("here is where all the magic happens")
         """
         This method alters the target FPDF instance
         by assigning IDs to all PDF objects,
@@ -376,10 +391,11 @@ class OutputProducer:
         for embedded_file in fpdf.embedded_files:
             self._add_pdf_obj(embedded_file, "embedded_files")
         font_objs_per_index = self._add_fonts()
+        pattern_objs_per_index = self._add_patterns()
         img_objs_per_index = self._add_images()
         gfxstate_objs_per_name = self._add_gfxstates()
         resources_dict_obj = self._add_resources_dict(
-            font_objs_per_index, img_objs_per_index, gfxstate_objs_per_name
+            font_objs_per_index, pattern_objs_per_index, img_objs_per_index, gfxstate_objs_per_name
         )
         struct_tree_root_obj = self._add_structure_tree()
         outline_dict_obj, outline_items = self._add_document_outline()
@@ -475,6 +491,7 @@ class OutputProducer:
         self.buffer += data + b"\n"
 
     def _add_pdf_obj(self, pdf_obj, trace_label=None):
+        print("object id is determined")
         self.obj_id += 1
         pdf_obj.id = self.obj_id
         self.pdf_objs.append(pdf_obj)
@@ -527,6 +544,7 @@ class OutputProducer:
         return sig_annotation_obj
 
     def _add_fonts(self):
+        print("adding fonts")
         font_objs_per_index = {}
         for font in sorted(self.fpdf.fonts.values(), key=lambda font: font.i):
             # Standard font
@@ -689,6 +707,25 @@ class OutputProducer:
                 font.close()
 
         return font_objs_per_index
+    
+    def _add_patterns(self):
+        print("adding patterns")
+        pattern_objs_per_index = {}
+        for pattern in sorted(self.patterns.values(), key=lambda pattern: pattern.i):
+            # Assuming each pattern has an index and necessary properties
+            # Define a tiling pattern
+            tiling_pattern_obj = PDFPattern(
+                pattern_type=1,  # Tiling pattern
+                paint_type=1,    # Colored tiling pattern
+                tiling_type=1,   # Constant spacing
+                bbox=[0, 0, 8, 8],  # The pattern cell's bounding box
+                x_step=12,       # Horizontal spacing
+                y_step=12        # Vertical spacing
+                # Resources and matrix could be added if necessary
+            )
+            self._add_pdf_obj(tiling_pattern_obj, "patterns")
+            pattern_objs_per_index[pattern.i] = tiling_pattern_obj
+
 
     def _add_images(self):
         img_objs_per_index = {}

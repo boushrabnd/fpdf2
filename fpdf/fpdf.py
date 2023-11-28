@@ -247,6 +247,7 @@ class FPDF(GraphicsStateMixin, TextRegionMixin):
         self.page = 0  # current page number
         self.pages = {}  # array of PDFPage objects starting at index 1
         self.fonts = {}  # map font string keys to an instance of CoreFont or TTFFont
+        self.patterns = {} # map pattern fill objects 
         self.images = {}  # map image identifiers to dicts describing the raster images
         self.icc_profiles = {}  # map icc profiles (bytes) to their index (number)
         self.links = {}  # array of Destination objects starting at index 1
