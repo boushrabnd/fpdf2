@@ -391,11 +391,11 @@ class OutputProducer:
         for embedded_file in fpdf.embedded_files:
             self._add_pdf_obj(embedded_file, "embedded_files")
         font_objs_per_index = self._add_fonts()
-        pattern_objs_per_index = self._add_patterns()
+        # pattern_objs_per_index = self._add_patterns()
         img_objs_per_index = self._add_images()
         gfxstate_objs_per_name = self._add_gfxstates()
         resources_dict_obj = self._add_resources_dict(
-            font_objs_per_index, pattern_objs_per_index, img_objs_per_index, gfxstate_objs_per_name
+            font_objs_per_index, img_objs_per_index, gfxstate_objs_per_name
         )
         struct_tree_root_obj = self._add_structure_tree()
         outline_dict_obj, outline_items = self._add_document_outline()

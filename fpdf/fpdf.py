@@ -1791,8 +1791,9 @@ class FPDF(GraphicsStateMixin, TextRegionMixin):
             True,
             style,
         )
-
+    
     def add_font(self, family=None, style="", fname=None, uni="DEPRECATED"):
+        print("adding new fonts that don't already exist")
         """
         Imports a TrueType or OpenType font and makes it available
         for later calls to the `FPDF.set_font()` method.
@@ -2662,6 +2663,7 @@ class FPDF(GraphicsStateMixin, TextRegionMixin):
         else:
             self._out("q")
         # All the following calls to .set*() methods invoke .out() and write to the stream buffer:
+        print("All the following calls to .set*() methods invoke .out() and write to the stream buffer")
         if font_family is not None or font_style is not None or font_size is not None:
             self.set_font(
                 font_family or self.font_family,
