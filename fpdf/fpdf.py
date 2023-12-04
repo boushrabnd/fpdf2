@@ -20,6 +20,7 @@ from os.path import splitext
 from pathlib import Path
 from typing import Callable, NamedTuple, Optional, Union
 
+
 try:
     from endesive import signer
     from cryptography.hazmat.primitives.serialization import pkcs12
